@@ -51,11 +51,16 @@ def generate_launch_description():
     effort_controller_config = os.path.join(
         get_package_share_directory("panda_gazebo_moveit2"), "config", "ros_control.yaml"
     )
-    print(effort_controller_config)
-    spawn_controller = launch_ros.actions.Node(
+    spawn_controller_arm = launch_ros.actions.Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_group_position_controller", "--param-file", effort_controller_config, "--controller-type", "effort_controllers/JointGroupPositionController"],
+        arguments=["panda_arm_controller", "--param-file", effort_controller_config, "--controller-type", "joint_trajectory_controller/JointTrajectoryController"],
+        output="screen",
+    )
+    spawn_controller_hand = launch_ros.actions.Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["hand_controller", "--param-file", effort_controller_config, "--controller-type", "position_controllers/GripperActionController"],
         output="screen",
     )
     return launch.LaunchDescription([
@@ -73,7 +78,13 @@ def generate_launch_description():
         launch.actions.RegisterEventHandler(
             event_handler=launch.event_handlers.OnProcessExit(
                 target_action = spawn_joint_state_broadcaster,
-                on_exit=[spawn_controller],
+                on_exit=[spawn_controller_arm],
+                ),
+        ),
+        launch.actions.RegisterEventHandler(
+            event_handler=launch.event_handlers.OnProcessExit(
+                target_action = spawn_joint_state_broadcaster,
+                on_exit=[spawn_controller_hand],
                 ),
         ),
         robot_state_publisher_node,
