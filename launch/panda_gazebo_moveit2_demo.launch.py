@@ -75,18 +75,20 @@ def generate_launch_description():
                 on_exit=[spawn_joint_state_broadcaster],
                 ),
         ),
-        launch.actions.RegisterEventHandler(
-            event_handler=launch.event_handlers.OnProcessExit(
-                target_action = spawn_joint_state_broadcaster,
-                on_exit=[spawn_controller_arm],
-                ),
-        ),
-        launch.actions.RegisterEventHandler(
-            event_handler=launch.event_handlers.OnProcessExit(
-                target_action = spawn_joint_state_broadcaster,
-                on_exit=[spawn_controller_hand],
-                ),
-        ),
+        # spawn_joint_state_broadcaster,
+        spawn_controller_arm,
+        # launch.actions.RegisterEventHandler(
+        #     event_handler=launch.event_handlers.OnProcessExit(
+        #         target_action = spawn_joint_state_broadcaster,
+        #         on_exit=[spawn_controller_arm],
+        #         ),
+        # ),
+        # launch.actions.RegisterEventHandler(
+        #     event_handler=launch.event_handlers.OnProcessExit(
+        #         target_action = spawn_controller_arm,
+        #         on_exit=[spawn_controller_hand],
+        #         ),
+        # ),
         robot_state_publisher_node,
         gzclient,
         gzserver,
